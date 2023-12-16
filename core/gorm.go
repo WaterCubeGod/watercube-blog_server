@@ -6,13 +6,12 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gvb_server/global"
-	"log"
 	"time"
 )
 
 func InitGorm() *gorm.DB {
 	if global.CONFIG.Mysql.Host == "" {
-		log.Printf("未配置mysql,取消gorm连接")
+		global.LOG.Warnln("未配置mysql,取消gorm连接")
 		return nil
 	}
 	dsn := global.CONFIG.Mysql.Dsn()
@@ -24,12 +23,13 @@ func InitGorm() *gorm.DB {
 	} else {
 		mysqlLogger = logger.Default.LogMode(logger.Error) //只打印错误的logger
 	}
+	//global.MySqlLog = logger.Default.LogMode(logger.Info)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: mysqlLogger,
 	})
 	if err != nil {
-		log.Fatalf(fmt.Sprintf("[%s] mysql连接失败", err))
+		global.LOG.Fatalf(fmt.Sprintf("[%s] mysql连接失败", err))
 	}
 
 	sqlDB, _ := db.DB()
