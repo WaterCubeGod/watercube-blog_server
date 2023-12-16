@@ -2,6 +2,7 @@ package main
 
 import (
 	"gvb_server/core"
+	"gvb_server/flag"
 	"gvb_server/global"
 	"gvb_server/routers"
 )
@@ -13,13 +14,20 @@ func main() {
 	global.LOG = core.InitLogger()
 	// 连接数据库
 	global.DB = core.InitGorm()
+
+	//命令行参数绑定
+	option := flag.Parse()
+	if !flag.IsWebStop(option) {
+		flag.Makemigrations()
+		return
+	}
 	// 初始化路由
 	router := routers.InitRouter()
 	addr := global.CONFIG.System.Addr()
 	global.LOG.Infof("gvb_server运行在：%s", addr)
 	err := router.Run(addr)
 	if err != nil {
-		global.LOG.Errorln("路由启动失败")
+		global.LOG.Fatalf("路由启动失败 %v", err)
 		return
 	}
 }
