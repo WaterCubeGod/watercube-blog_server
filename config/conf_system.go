@@ -1,7 +1,7 @@
 package config
 
 type System struct {
-	host string `yaml:"host"`
-	port string `yaml:"port"`
-	env  string `yaml:"env"`
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+	Env  string `yaml:"env"`
 }

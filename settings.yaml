@@ -1,9 +1,9 @@
 mysql:
-  host: ""
+  host: 127.0.0.1
   port: 3306
   db: gvb_db
   user: root
-  password: 123456
+  password: 20021229.bin
   log_level: dev
 logger:
   level: info
