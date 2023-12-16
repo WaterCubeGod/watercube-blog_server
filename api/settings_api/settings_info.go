@@ -2,11 +2,9 @@ package settings_api
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"gvb_server/models/res"
 )
 
 func (SettingsApi) SettingsInfoView(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "xxx",
-	})
+	res.OK(map[string]string{}, "xxx", c)
 }
