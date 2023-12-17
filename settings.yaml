@@ -17,28 +17,16 @@ system:
   port: 8080
   env: release
 site_info:
-  created_at: "2023-12-16"
-  title: wb的个人博客
-  version: 1.0.1
-  name: 神的水立方
-  job: 后端开发
-  addr: 辽宁沈阳
-  slogan: 神的水立方
-  slogan_en: watercube
-email:
-  host: 3166474860@qq.com
-  port: 8888
-  user: xxx@qq.com
-  password: xxx
-  default_from_email: 神的水立方
-  use_ssl: xx
-  user_tls: xx
-jwt:
-  secret: xxx
-  expires: 48
-  issuer: xx
+  created_at: ""
+  title: ""
+  version: ""
+  name: ""
+  job: ""
+  addr: ""
+  slogan: ""
+  slogan_en: ""
 qq:
-  app_id: "xx"
+  app_id: xx
   key: xx
   redirect: http://xx.xx.com/login?flag=qq
 qi_niu:
@@ -48,3 +36,15 @@ qi_niu:
   cdn: xx://xx.xx.com/
   zone: xx
   size: 5
+email:
+  host: 3166474860@qq.com
+  port: 8888
+  user: xxx@qq.com
+  password: xxx
+  default_from_email: 神的水立方
+  use_ssl: false
+  user_tls: false
+jwt:
+  secret: xxx
+  expires: 48
+  issuer: xx
