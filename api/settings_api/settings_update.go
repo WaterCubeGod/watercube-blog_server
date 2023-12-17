@@ -43,7 +43,7 @@ func (s *SettingsApi) SettingsUpdateView(c *gin.Context) {
 		}
 		global.CONFIG.QQ = qq
 	case "qi_niu":
-		var qiNiu config.QiNiu
+		var qiNiu config.Telegraph
 		err = c.ShouldBindJSON(&qiNiu)
 		if err != nil {
 			res.FailWithCode(res.ArgumentError, c)

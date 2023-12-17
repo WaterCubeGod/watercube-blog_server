@@ -23,6 +23,10 @@ func OK(data any, msg string, c *gin.Context) {
 	Result(SUCCESS, data, msg, c)
 }
 
+func OKWith(c *gin.Context) {
+	Result(SUCCESS, "", "成功", c)
+}
+
 func OKWithData(data any, c *gin.Context) {
 	Result(SUCCESS, data, "成功", c)
 }

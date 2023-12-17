@@ -16,6 +16,9 @@ system:
   host: 0.0.0.0
   port: 8080
   env: release
+upload:
+  size: 5
+  path: uploads/file
 site_info:
   created_at: ""
   title: ""
@@ -29,7 +32,8 @@ qq:
   app_id: xx
   key: xx
   redirect: http://xx.xx.com/login?flag=qq
-qi_niu:
+telegraph:
+  enable: false
   access_key: WMM-xx-FdRIf-xx
   secret_key: xx
   bucket: watercube

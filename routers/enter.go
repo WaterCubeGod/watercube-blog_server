@@ -17,6 +17,7 @@ func InitRouter() *gin.Engine {
 	routerGroupApp := RouterGroup{apiRouterGroup}
 	// 系统配置api
 	routerGroupApp.SettingsRouter()
+	routerGroupApp.ImagesRouter()
 
 	err := router.SetTrustedProxies([]string{"127.0.0.1"})
 	if err != nil {
