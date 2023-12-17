@@ -4,12 +4,31 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
+	"gvb_server/models"
 	"gvb_server/models/res"
+	"gvb_server/utils"
+	"io"
 	"path"
+	"strings"
+	"time"
 )
 
 const (
 	B2M = 1024 * 1024 // 字节转换为MB
+)
+
+var (
+	// WhiteImageList 图片上传的白名单
+	WhiteImageList = []string{
+		"jpg",
+		"png",
+		"jpeg",
+		"ico",
+		"tiff",
+		"gif",
+		"svg",
+		"webp",
+	}
 )
 
 type FileUploadResponse struct {
@@ -34,17 +53,48 @@ func (*ImagesApi) ImageUploadView(c *gin.Context) {
 	}
 
 	for _, file := range fileHeaders {
+		fileName := file.Filename
+		// 判断是否在白名单内
+		fileList := strings.Split(fileName, ".")
+		suffix := strings.ToLower(fileList[len(fileList)-1])
+		if !utils.InList(suffix, WhiteImageList) {
+			resList = append(resList, FileUploadResponse{
+				FileName:  fileName,
+				IsSuccess: false,
+				Msg:       fmt.Sprintf("文件非法"),
+			})
+			continue
+		}
 		size := file.Size
 		if size > int64(B2M*global.CONFIG.Upload.Size) {
 			resList = append(resList, FileUploadResponse{
-				FileName:  file.Filename,
+				FileName:  fileName,
 				IsSuccess: false,
 				Msg:       fmt.Sprintf("图片大小超过%dMB", global.CONFIG.Upload.Size),
 			})
 			continue
 		}
+
 		filePath := path.Join(global.CONFIG.Upload.Path, file.Filename)
-		err := c.SaveUploadedFile(file, filePath)
+		fileObj, err := file.Open()
+		if err != nil {
+			global.LOG.Error(err)
+		}
+		byteData, err := io.ReadAll(fileObj)
+		imageHash := utils.Md5(byteData)
+		// 去数据库中查看文件是否存在（根据hash值）
+		var bannerModel models.BannerModel
+		err = global.DB.Take(&bannerModel, "hash = ?", imageHash).Error
+		if err == nil {
+			// 找到了
+			resList = append(resList, FileUploadResponse{
+				FileName:  bannerModel.Path,
+				IsSuccess: false,
+				Msg:       fmt.Sprintf("图片已存在"),
+			})
+			continue
+		}
+		err = c.SaveUploadedFile(file, filePath)
 		if err != nil {
 			resList = append(resList, FileUploadResponse{
 				FileName:  filePath,
@@ -58,6 +108,19 @@ func (*ImagesApi) ImageUploadView(c *gin.Context) {
 			FileName:  filePath,
 			IsSuccess: true,
 			Msg:       fmt.Sprintf("图片上传成功"),
+		})
+
+		t := time.Now()
+		m := models.MODEL{
+			CreateAt: t,
+			UpdateAt: t,
+		}
+		// 图片入库
+		global.DB.Create(&models.BannerModel{
+			MODEL: m,
+			Path:  filePath,
+			Hash:  imageHash,
+			Name:  fileName,
 		})
 	}
 	res.OKWithData(resList, c)
