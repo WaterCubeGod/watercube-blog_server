@@ -8,7 +8,14 @@ import (
 	"gvb_server/models/res"
 )
 
-// SettingsUpdateView 修改某一项的配置信息
+// SettingsUpdateView 修改配置信息
+// @Tags 配置管理
+// @Summary 修改配置信息
+// @Description 修改某一项配置信息
+// @Param data body SettingsUri false "表示单个参数"
+// @Router /api/settings/:name [put]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (s *SettingsApi) SettingsUpdateView(c *gin.Context) {
 	cr := SettingsUri{}
 	err := c.ShouldBindUri(&cr)

@@ -17,7 +17,7 @@ func (t *Array) Scan(value interface{}) error {
 	return nil
 }
 
-func (t *Array) Value() (driver.Value, error) {
-	// 将数字转为值
-	return strings.Join(*t, "\n"), nil
+func (t Array) Value() (driver.Value, error) {
+	// 将数组转为字符串
+	return strings.Join(t, "\n"), nil
 }

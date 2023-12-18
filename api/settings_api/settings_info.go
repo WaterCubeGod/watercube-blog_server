@@ -6,7 +6,14 @@ import (
 	"gvb_server/models/res"
 )
 
-// SettingsInfoView 显示某一项的配置信息
+// SettingsInfoView 显示配置信息
+// @Tags 配置管理
+// @Summary 显示配置信息
+// @Description 显示某一项配置信息
+// @Param data body SettingsUri false "表示单个参数"
+// @Router /api/settings/:name [get]
+// @Produce json
+// @Success 200 {object} res.Response{}
 func (*SettingsApi) SettingsInfoView(c *gin.Context) {
 	var cr SettingsUri
 	err := c.ShouldBindUri(&cr)

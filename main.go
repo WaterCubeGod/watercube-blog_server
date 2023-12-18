@@ -2,10 +2,17 @@ package main
 
 import (
 	"gvb_server/core"
+	_ "gvb_server/docs"
 	"gvb_server/flag"
 	"gvb_server/global"
 	"gvb_server/routers"
 )
+
+// @title gvb_service API文档
+// @version 1.0
+// @description
+// @host 127.0.0.1:8080
+// @BasePath /
 
 func main() {
 	// 读取配置文件

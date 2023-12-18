@@ -1,0 +1,423 @@
+basePath: /
+definitions:
+  ctype.ImageType:
+    enum:
+    - 1
+    - 2
+    type: integer
+    x-enum-comments:
+      Local: 本地
+      Telegraph: telegraph
+    x-enum-varnames:
+    - Local
+    - Telegraph
+  image_ser.FileUploadResponse:
+    properties:
+      file_name:
+        description: 文件名
+        type: string
+      is_success:
+        description: 是否上传成功
+        type: boolean
+      msg:
+        description: 消息
+        type: string
+    type: object
+  images_api.ImageResponse:
+    properties:
+      id:
+        description: 图片id
+        type: integer
+      name:
+        description: 图片名称
+        type: string
+      path:
+        description: 图片路径
+        type: string
+    type: object
+  images_api.ImageUpdate:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  menu_api.ImageSort:
+    properties:
+      image_id:
+        type: integer
+      sort:
+        type: integer
+    type: object
+  menu_api.MenuRequest:
+    properties:
+      abstract:
+        items:
+          type: string
+        type: array
+      abstract_time:
+        description: 切换的时间，单位秒
+        type: integer
+      banner_time:
+        description: 切换的时间，单位秒
+        type: integer
+      image_sort_list:
+        description: 具体图片的顺序
+        items:
+          $ref: '#/definitions/menu_api.ImageSort'
+        type: array
+      path:
+        type: string
+      slogan:
+        type: string
+      sort:
+        description: 菜单的序号
+        type: integer
+      title:
+        type: string
+    required:
+    - path
+    - sort
+    - title
+    type: object
+  models.BannerModel:
+    properties:
+      Hash:
+        description: 图片的Hash值，用于判断重复图片
+        type: string
+      created_at:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      image_type:
+        allOf:
+        - $ref: '#/definitions/ctype.ImageType'
+        description: 图片的位置(本地还是telegraph)
+      name:
+        description: 图片名称
+        type: string
+      path:
+        description: 图片路径
+        type: string
+    type: object
+  models.MenuModel:
+    properties:
+      abstract:
+        description: 简介
+        items:
+          type: string
+        type: array
+      abstract_time:
+        description: 简介的切换时间
+        type: integer
+      banner_time:
+        description: 菜单的切换时间 为0表示不切换
+        type: integer
+      created_at:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      menu_images:
+        description: 菜单的图片列表
+        items:
+          $ref: '#/definitions/models.BannerModel'
+        type: array
+      path:
+        type: string
+      slogan:
+        description: slogan
+        type: string
+      sort:
+        description: 菜单的顺序
+        type: integer
+      title:
+        type: string
+    type: object
+  models.RemoveRequest:
+    properties:
+      id_list:
+        items:
+          type: integer
+        type: array
+    type: object
+  res.CodeType:
+    enum:
+    - 0
+    - 1
+    - 1001
+    - 1002
+    - 1003
+    type: integer
+    x-enum-comments:
+      ArgumentError: 参数错误
+      SettingsError: 系统错误
+      UploadError: 上传错误
+    x-enum-varnames:
+    - SUCCESS
+    - Error
+    - SettingsError
+    - ArgumentError
+    - UploadError
+  res.ListResponse-image_ser_FileUploadResponse:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/image_ser.FileUploadResponse'
+    type: object
+  res.ListResponse-images_api_ImageResponse:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/images_api.ImageResponse'
+    type: object
+  res.ListResponse-models_BannerModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/models.BannerModel'
+    type: object
+  res.ListResponse-models_MenuModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/models.MenuModel'
+    type: object
+  res.Response:
+    properties:
+      code:
+        $ref: '#/definitions/res.CodeType'
+      data: {}
+      message:
+        type: string
+    type: object
+  settings_api.SettingsUri:
+    properties:
+      name:
+        type: string
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact: {}
+  title: gvb_service API文档
+  version: "1.0"
+paths:
+  /api/image_names:
+    get:
+      description: 查看图片简单信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-images_api_ImageResponse'
+              type: object
+      summary: 查看图片简单信息
+      tags:
+      - 图片管理
+  /api/images:
+    delete:
+      description: 删除图片
+      parameters:
+      - description: 删除图片的列表
+        in: body
+        name: images
+        required: true
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除图片
+      tags:
+      - 图片管理
+    get:
+      description: 图片列表查询
+      parameters:
+      - description: 列表页数
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 查询关键词
+        in: query
+        name: key
+        type: string
+      - description: 每一页的条数
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: 显示顺序规则
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_BannerModel'
+              type: object
+      summary: 图片列表查询
+      tags:
+      - 图片管理
+    post:
+      description: 上传图片
+      parameters:
+      - description: 上传的一系列图片(实际参数:multipart.Form)
+        in: formData
+        name: images
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-image_ser_FileUploadResponse'
+              type: object
+      summary: 上传图片
+      tags:
+      - 图片管理
+    put:
+      description: 修改图片名称
+      parameters:
+      - description: 修改图片名称
+        in: body
+        name: images
+        required: true
+        schema:
+          $ref: '#/definitions/images_api.ImageUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 修改图片名称
+      tags:
+      - 图片管理
+  /api/menu_names:
+    get:
+      description: 菜单名称列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_MenuModel'
+              type: object
+      summary: 菜单名称列表
+      tags:
+      - 菜单管理
+  /api/menus:
+    get:
+      description: 菜单列表查询
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_MenuModel'
+              type: object
+      summary: 菜单列表
+      tags:
+      - 菜单管理
+    post:
+      description: 添加菜单
+      parameters:
+      - description: 添加菜单
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/menu_api.MenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 添加菜单
+      tags:
+      - 菜单管理
+  /api/settings/:name:
+    get:
+      description: 显示某一项配置信息
+      parameters:
+      - description: 表示单个参数
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/settings_api.SettingsUri'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 显示配置信息
+      tags:
+      - 配置管理
+    put:
+      description: 修改某一项配置信息
+      parameters:
+      - description: 表示单个参数
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/settings_api.SettingsUri'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 修改配置信息
+      tags:
+      - 配置管理
+swagger: "2.0"
