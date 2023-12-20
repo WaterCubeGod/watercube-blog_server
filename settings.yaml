@@ -6,6 +6,11 @@ mysql:
   user: root
   password: 20021229.bin
   log_level: dev
+redis:
+  ip: 39.106.8.202
+  port: 6379
+  password: 021229.bin20
+  pool_size: 100
 logger:
   level: info
   prefix: '[gvb]'
@@ -41,14 +46,14 @@ telegraph:
   zone: xx
   size: 5
 email:
-  host: 3166474860@qq.com
-  port: 8888
-  user: xxx@qq.com
-  password: xxx
-  default_from_email: 神的水立方
+  host: smtp.qq.com
+  port: 465
+  user: 3166474860@qq.com
+  password: sfxisyflzafydcde
+  default_from_email: 3166474860@qq.com
   use_ssl: false
   user_tls: false
 jwt:
   secret: xxx
-  expires: 48
+  expires: 2
   issuer: xx

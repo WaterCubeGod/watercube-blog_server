@@ -7,12 +7,6 @@ import (
 	"gvb_server/models/res"
 )
 
-type MenuNameResponse struct {
-	ID    uint   `json:"id"`
-	Title string `json:"title"`
-	Path  string `json:"path"`
-}
-
 // MenuNameListView 菜单名称列表
 // @Tags 菜单管理
 // @Summary 菜单名称列表
@@ -21,7 +15,7 @@ type MenuNameResponse struct {
 // @Produce json
 // @Success 200 {object} res.Response{data=res.ListResponse[models.MenuModel]}
 func (*MenuApi) MenuNameListView(c *gin.Context) {
-	var menuName []MenuNameResponse
+	var menuName []models.MenuNameResponse
 	global.DB.Model(models.MenuModel{}).
 		Select("id", "id", "title", "path").Scan(&menuName)
 	res.OKWithData(menuName, c)

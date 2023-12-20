@@ -19,13 +19,14 @@ func main() {
 	core.InitConf()
 	// 初始化日志
 	global.LOG = core.InitLogger()
-	// 连接数据库
+	// 连接数据库mysql和redis
 	global.DB = core.InitGorm()
+	global.RDB = core.ConnectRedis()
 
 	//命令行参数绑定
 	option := flag.Parse()
 	if !flag.IsWebStop(option) {
-		flag.Makemigrations()
+		flag.SwitchOption(option)
 		return
 	}
 	// 初始化路由

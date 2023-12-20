@@ -45,44 +45,6 @@ definitions:
     - id
     - name
     type: object
-  menu_api.ImageSort:
-    properties:
-      image_id:
-        type: integer
-      sort:
-        type: integer
-    type: object
-  menu_api.MenuRequest:
-    properties:
-      abstract:
-        items:
-          type: string
-        type: array
-      abstract_time:
-        description: 切换的时间，单位秒
-        type: integer
-      banner_time:
-        description: 切换的时间，单位秒
-        type: integer
-      image_sort_list:
-        description: 具体图片的顺序
-        items:
-          $ref: '#/definitions/menu_api.ImageSort'
-        type: array
-      path:
-        type: string
-      slogan:
-        type: string
-      sort:
-        description: 菜单的序号
-        type: integer
-      title:
-        type: string
-    required:
-    - path
-    - sort
-    - title
-    type: object
   models.BannerModel:
     properties:
       Hash:
@@ -104,6 +66,20 @@ definitions:
       path:
         description: 图片路径
         type: string
+    type: object
+  models.ImageSort:
+    properties:
+      image_id:
+        type: integer
+      sort:
+        type: integer
+    type: object
+  models.MenuId:
+    properties:
+      id:
+        items:
+          type: integer
+        type: array
     type: object
   models.MenuModel:
     properties:
@@ -139,6 +115,37 @@ definitions:
         type: integer
       title:
         type: string
+    type: object
+  models.MenuRequest:
+    properties:
+      abstract:
+        items:
+          type: string
+        type: array
+      abstract_time:
+        description: 切换的时间，单位秒
+        type: integer
+      banner_time:
+        description: 切换的时间，单位秒
+        type: integer
+      image_sort_list:
+        description: 具体图片的顺序
+        items:
+          $ref: '#/definitions/models.ImageSort'
+        type: array
+      path:
+        type: string
+      slogan:
+        type: string
+      sort:
+        description: 菜单的序号
+        type: integer
+      title:
+        type: string
+    required:
+    - path
+    - sort
+    - title
     type: object
   models.RemoveRequest:
     properties:
@@ -328,6 +335,25 @@ paths:
       summary: 修改图片名称
       tags:
       - 图片管理
+  /api/menu_detail:
+    get:
+      description: 菜单细节查询
+      parameters:
+      - description: 查询菜单的id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 菜单细节
+      tags:
+      - 菜单管理
   /api/menu_names:
     get:
       description: 菜单名称列表
@@ -347,6 +373,25 @@ paths:
       tags:
       - 菜单管理
   /api/menus:
+    delete:
+      description: 删除菜单
+      parameters:
+      - description: 删除菜单的列表
+        in: body
+        name: menus
+        required: true
+        schema:
+          $ref: '#/definitions/models.MenuId'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 删除菜单
+      tags:
+      - 菜单管理
     get:
       description: 菜单列表查询
       produces:
@@ -372,7 +417,7 @@ paths:
         name: file
         required: true
         schema:
-          $ref: '#/definitions/menu_api.MenuRequest'
+          $ref: '#/definitions/models.MenuRequest'
       produces:
       - application/json
       responses:
@@ -381,6 +426,25 @@ paths:
           schema:
             $ref: '#/definitions/res.Response'
       summary: 添加菜单
+      tags:
+      - 菜单管理
+    put:
+      description: 修改菜单
+      parameters:
+      - description: 菜单参数
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/models.MenuRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 修改菜单
       tags:
       - 菜单管理
   /api/settings/:name:

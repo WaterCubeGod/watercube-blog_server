@@ -1,24 +1,30 @@
 package flag
 
-import sysflag "flag"
+import sys_flag "flag"
 
 type Option struct {
-	DB bool
+	DB   bool
+	User string // -u admin
 }
 
 // Parse 解析命令行参数
 func Parse() Option {
-	db := sysflag.Bool("db", false, "初始化数据库")
+	db := sys_flag.Bool("db", false, "初始化数据库")
+	user := sys_flag.String("u", "", "创建用户")
 	//解析命令行参数写入注册的flag里
-	sysflag.Parse()
+	sys_flag.Parse()
 	return Option{
-		DB: *db,
+		DB:   *db,
+		User: *user,
 	}
 }
 
 // IsWebStop 是否停止Web项目
 func IsWebStop(option Option) bool {
 	if option.DB {
+		return false
+	}
+	if option.User != "" {
 		return false
 	}
 	return true
@@ -28,5 +34,11 @@ func IsWebStop(option Option) bool {
 func SwitchOption(option Option) {
 	if option.DB {
 		Makemigrations()
+		return
 	}
+	if option.User == "admin" || option.User == "user" {
+		CreateUser(option.User)
+		return
+	}
+	sys_flag.Usage()
 }

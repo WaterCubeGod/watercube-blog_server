@@ -24,6 +24,7 @@ func InitRouter() *gin.Engine {
 	routerGroupApp.SettingsRouter()
 	routerGroupApp.ImagesRouter()
 	routerGroupApp.MenuRouter()
+	routerGroupApp.UserRouter()
 
 	err := router.SetTrustedProxies([]string{"127.0.0.1"})
 	if err != nil {

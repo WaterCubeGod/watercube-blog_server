@@ -204,6 +204,35 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/menu_detail": {
+            "get": {
+                "description": "菜单细节查询",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "菜单细节",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "查询菜单的id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/menu_names": {
             "get": {
                 "description": "菜单名称列表",
@@ -267,6 +296,35 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "description": "修改菜单",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "修改菜单",
+                "parameters": [
+                    {
+                        "description": "菜单参数",
+                        "name": "file",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "添加菜单",
                 "produces": [
@@ -283,7 +341,36 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/menu_api.MenuRequest"
+                            "$ref": "#/definitions/models.MenuRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/res.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除菜单",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "菜单管理"
+                ],
+                "summary": "删除菜单",
+                "parameters": [
+                    {
+                        "description": "删除菜单的列表",
+                        "name": "menus",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.MenuId"
                         }
                     }
                 ],
@@ -421,61 +508,6 @@ const docTemplate = `{
                 }
             }
         },
-        "menu_api.ImageSort": {
-            "type": "object",
-            "properties": {
-                "image_id": {
-                    "type": "integer"
-                },
-                "sort": {
-                    "type": "integer"
-                }
-            }
-        },
-        "menu_api.MenuRequest": {
-            "type": "object",
-            "required": [
-                "path",
-                "sort",
-                "title"
-            ],
-            "properties": {
-                "abstract": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "abstract_time": {
-                    "description": "切换的时间，单位秒",
-                    "type": "integer"
-                },
-                "banner_time": {
-                    "description": "切换的时间，单位秒",
-                    "type": "integer"
-                },
-                "image_sort_list": {
-                    "description": "具体图片的顺序",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/menu_api.ImageSort"
-                    }
-                },
-                "path": {
-                    "type": "string"
-                },
-                "slogan": {
-                    "type": "string"
-                },
-                "sort": {
-                    "description": "菜单的序号",
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "models.BannerModel": {
             "type": "object",
             "properties": {
@@ -506,6 +538,28 @@ const docTemplate = `{
                 "path": {
                     "description": "图片路径",
                     "type": "string"
+                }
+            }
+        },
+        "models.ImageSort": {
+            "type": "object",
+            "properties": {
+                "image_id": {
+                    "type": "integer"
+                },
+                "sort": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.MenuId": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -551,6 +605,50 @@ const docTemplate = `{
                 },
                 "sort": {
                     "description": "菜单的顺序",
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MenuRequest": {
+            "type": "object",
+            "required": [
+                "path",
+                "sort",
+                "title"
+            ],
+            "properties": {
+                "abstract": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "abstract_time": {
+                    "description": "切换的时间，单位秒",
+                    "type": "integer"
+                },
+                "banner_time": {
+                    "description": "切换的时间，单位秒",
+                    "type": "integer"
+                },
+                "image_sort_list": {
+                    "description": "具体图片的顺序",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ImageSort"
+                    }
+                },
+                "path": {
+                    "type": "string"
+                },
+                "slogan": {
+                    "type": "string"
+                },
+                "sort": {
+                    "description": "菜单的序号",
                     "type": "integer"
                 },
                 "title": {

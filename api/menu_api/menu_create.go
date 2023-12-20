@@ -4,37 +4,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"gvb_server/global"
 	"gvb_server/models"
-	"gvb_server/models/ctype"
 	"gvb_server/models/res"
 )
-
-type ImageSort struct {
-	ImageID uint `json:"image_id"`
-	Sort    int  `json:"sort"`
-}
-
-type MenuRequest struct {
-	Title         string      `json:"title" binding:"required" msg:"请完善菜单名称"`
-	Path          string      `json:"path" binding:"required" msg:"请完善菜单路径"`
-	Slogan        string      `json:"slogan"`
-	Abstract      ctype.Array `json:"abstract"`
-	AbstractTime  *int        `json:"abstract_time"`                         // 切换的时间，单位秒
-	BannerTime    int         `json:"banner_time"`                           // 切换的时间，单位秒
-	Sort          int         `json:"sort" binding:"required" msg:"请输入菜单序号"` // 菜单的序号
-	ImageSortList []ImageSort `json:"image_sort_list"`                       // 具体图片的顺序
-}
 
 // MenuCreateView 添加菜单
 // @Tags 菜单管理
 // @Summary 添加菜单
 // @Description 添加菜单
-// @Param file body MenuRequest true "添加菜单"
+// @Param file body models.MenuRequest true "添加菜单"
 // @Router /api/menus [post]
 // @Produce json
 // @Success 200 {object} res.Response{}
 func (*MenuApi) MenuCreateView(c *gin.Context) {
 	tx := global.DB.Begin()
-	var cr MenuRequest
+	var cr models.MenuRequest
 	err := c.ShouldBindJSON(&cr)
 	if err != nil {
 		res.FailWithError(err, &cr, "msg", c)

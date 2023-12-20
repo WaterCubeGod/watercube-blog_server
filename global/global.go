@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -12,4 +13,5 @@ var (
 	DB       *gorm.DB
 	LOG      *logrus.Logger
 	MySqlLog logger.Interface
+	RDB      *redis.Client
 )
