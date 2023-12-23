@@ -22,5 +22,5 @@ type ArticleModel struct {
 	BannerID      uint           `json:"banner_id"`                                      // 文章封面ID
 	NickName      string         `gorm:"size:42" json:"nick_name"`                       // 发布文章的用户昵称
 	BannerPath    string         `json:"banner_path"`                                    // 文章的封面
-	Tags          ctype.Array    `gorm:"type:string;size:64" jso:"tags"`                 // 文章标签
+	Tags          ctype.Array    `gorm:"type:string;size:64" json:"tags"`                // 文章标签
 }

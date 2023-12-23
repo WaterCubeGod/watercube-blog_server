@@ -15,6 +15,7 @@ import (
 // @BasePath /
 
 func main() {
+	global.ARTICLE_INDEX = "article"
 	// 读取配置文件
 	core.InitConf()
 	// 初始化日志
@@ -22,7 +23,8 @@ func main() {
 	// 连接数据库mysql和redis
 	global.DB = core.InitGorm()
 	global.RDB = core.ConnectRedis()
-
+	// 连接es
+	global.ES = core.InitEs()
 	//命令行参数绑定
 	option := flag.Parse()
 	if !flag.IsWebStop(option) {

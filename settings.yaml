@@ -11,6 +11,10 @@ redis:
   port: 6379
   password: 021229.bin20
   pool_size: 100
+elasticsearch:
+  ip: 39.106.8.202
+  port: 9200
+  log_err: ELASTIC
 logger:
   level: info
   prefix: '[gvb]'
