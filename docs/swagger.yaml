@@ -1,5 +1,51 @@
 basePath: /
 definitions:
+  ctype.ArticleRequest:
+    properties:
+      abstract:
+        type: string
+      banner_id:
+        type: integer
+      banner_path:
+        type: string
+      category:
+        type: string
+      collects_count:
+        type: integer
+      comment_count:
+        description: 评论量
+        type: integer
+      content:
+        type: string
+      created_at:
+        description: 创建时间
+        type: string
+      digg_count:
+        description: 点赞量
+        type: integer
+      is_publish:
+        type: boolean
+      link:
+        type: string
+      look_count:
+        description: 浏览量
+        type: integer
+      nick_name:
+        type: string
+      source:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      updated_at:
+        description: 更新时间
+        type: string
+      user_id:
+        type: integer
+    type: object
   ctype.ImageType:
     enum:
     - 1
@@ -181,12 +227,35 @@ definitions:
     - sort
     - title
     type: object
+  models.PageInfo:
+    properties:
+      key:
+        type: string
+      limit:
+        type: integer
+      page:
+        type: integer
+      sort:
+        type: string
+    type: object
   models.RemoveRequest:
     properties:
       id_list:
         items:
           type: integer
         type: array
+    type: object
+  models.TagModel:
+    properties:
+      created_at:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      title:
+        description: 标签的名称
+        type: string
     type: object
   models.UserModel:
     properties:
@@ -247,6 +316,13 @@ definitions:
     - SettingsError
     - ArgumentError
     - UploadError
+  res.ListResponse-ctype_ArticleRequest:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/ctype.ArticleRequest'
+    type: object
   res.ListResponse-image_ser_FileUploadResponse:
     properties:
       count:
@@ -275,6 +351,13 @@ definitions:
       list:
         $ref: '#/definitions/models.MenuModel'
     type: object
+  res.ListResponse-models_TagModel:
+    properties:
+      count:
+        type: integer
+      list:
+        $ref: '#/definitions/models.TagModel'
+    type: object
   res.ListResponse-models_UserModel:
     properties:
       count:
@@ -294,6 +377,16 @@ definitions:
     properties:
       name:
         type: string
+    type: object
+  tag_api.TagRequest:
+    properties:
+      titles:
+        description: 显示的标签
+        items:
+          type: string
+        type: array
+    required:
+    - titles
     type: object
   user_api.BindEmailRequest:
     properties:
@@ -338,6 +431,89 @@ info:
   title: gvb_service API文档
   version: "1.0"
 paths:
+  /api/article:
+    post:
+      description: 创建文章
+      parameters:
+      - description: 文章相关属性
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ctype.ArticleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 创建文章
+      tags:
+      - 文章管理
+  /api/article_publish/:id:
+    put:
+      description: 文章发布
+      parameters:
+      - description: 要发布的文章id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 文章发布
+      tags:
+      - 文章管理
+  /api/article_update:
+    put:
+      description: 文章修改
+      parameters:
+      - description: 文章相关属性
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/ctype.ArticleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 文章修改
+      tags:
+      - 文章管理
+  /api/articles:
+    get:
+      description: 文章列表
+      parameters:
+      - description: 查询关键词
+        in: body
+        name: key
+        schema:
+          $ref: '#/definitions/models.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-ctype_ArticleRequest'
+              type: object
+      summary: 文章列表
+      tags:
+      - 文章管理
   /api/email_login:
     post:
       description: 邮箱登录
@@ -399,24 +575,11 @@ paths:
     get:
       description: 图片列表查询
       parameters:
-      - description: 列表页数
-        in: query
-        name: page
-        required: true
-        type: integer
-      - description: 查询关键词
-        in: query
+      - description: 文章列表
+        in: body
         name: key
-        type: string
-      - description: 每一页的条数
-        in: query
-        name: limit
-        required: true
-        type: integer
-      - description: 显示顺序规则
-        in: query
-        name: sort
-        type: string
+        schema:
+          $ref: '#/definitions/models.PageInfo'
       produces:
       - application/json
       responses:
@@ -599,6 +762,30 @@ paths:
       summary: 修改菜单
       tags:
       - 菜单管理
+  /api/my_articles:
+    get:
+      description: 我的文章列表
+      parameters:
+      - description: 查询关键词
+        in: body
+        name: key
+        schema:
+          $ref: '#/definitions/models.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-ctype_ArticleRequest'
+              type: object
+      summary: 我的文章列表
+      tags:
+      - 文章管理
   /api/settings/:name:
     get:
       description: 显示某一项配置信息
@@ -636,6 +823,82 @@ paths:
       summary: 修改配置信息
       tags:
       - 配置管理
+  /api/tag:
+    put:
+      description: 标签更新
+      parameters:
+      - description: 标签参数
+        in: body
+        name: file
+        required: true
+        schema:
+          $ref: '#/definitions/models.TagModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 标签更新
+      tags:
+      - 标签管理
+  /api/tags:
+    delete:
+      description: 标签删除
+      parameters:
+      - description: 删除标签的列表
+        in: body
+        name: menus
+        required: true
+        schema:
+          $ref: '#/definitions/models.RemoveRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 标签删除
+      tags:
+      - 标签管理
+    get:
+      description: 标签列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/res.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/res.ListResponse-models_TagModel'
+              type: object
+      summary: 标签列表
+      tags:
+      - 标签管理
+    post:
+      description: 标签创建
+      parameters:
+      - description: 标签的title
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/tag_api.TagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/res.Response'
+      summary: 标签创建
+      tags:
+      - 标签管理
   /api/user_bind_email:
     put:
       description: 用户绑定邮箱

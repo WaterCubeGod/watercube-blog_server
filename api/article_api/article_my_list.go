@@ -19,7 +19,7 @@ import (
 // @Param key body models.PageInfo false "查询关键词"
 // @Router /api/my_articles [get]
 // @Produce json
-// @Success 200 {object} res.Response{data=res.ListResponse[ArticleRequest]}
+// @Success 200 {object} res.Response{data=res.ListResponse[ctype.ArticleRequest]}
 func (*ArticleApi) ArticleMyListView(c *gin.Context) {
 	var page models.PageInfo
 	err := c.ShouldBindJSON(&page)

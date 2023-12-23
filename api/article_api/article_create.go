@@ -18,7 +18,7 @@ var PREFIX = "article:"
 // @Tags 文章管理
 // @Summary 创建文章
 // @Description 创建文章
-// @Param data body ArticleRequest true "文章相关属性"
+// @Param data body ctype.ArticleRequest true "文章相关属性"
 // @Router /api/article [post]
 // @Produce json
 // @Success 200 {object} res.Response{}

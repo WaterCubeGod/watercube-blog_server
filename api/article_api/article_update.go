@@ -14,7 +14,7 @@ import (
 // @Tags 文章管理
 // @Summary 文章修改
 // @Description 文章修改
-// @Param data body ArticleRequest true "文章相关属性"
+// @Param data body ctype.ArticleRequest true "文章相关属性"
 // @Router /api/article_update [put]
 // @Produce json
 // @Success 200 {object} res.Response{}
